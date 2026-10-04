@@ -1,0 +1,29 @@
+# WebIntelX AI - deterministic event-correlation configuration (PRD section 15, 33, 35).
+# HEURISTIC defaults tuned against the synthetic demo data; not validated on production traffic.
+# Missing keys fall back to the defaults in app/correlation/config.py.
+version: 1
+enabled: true
+lookback_hours: 72                 # events older than this are not considered
+
+# Maximum time gap between two consecutive events of the same entity for them to be linked
+# (temporal proximity gates every link; it also lowers the link strength).
+max_gap_s: {same_ip: 900, same_session: 1800, same_user: 900, same_endpoint: 900, similar_behavior: 900}
+
+# Base relationship strength in [0,1]. strength = base * (1 - 0.5 * min(gap / max_gap, 1)).
+base_strength: {same_session: 0.9, same_user: 0.8, same_ip: 0.6, attack_sequence: 0.9, same_endpoint: 0.4, similar_behavior: 0.3}
+
+# Relationship types that may merge events into one cluster. same_endpoint and similar_behavior are
+# recorded as evidence inside a cluster but never join two clusters (would over-merge unrelated actors).
+merge_types: [same_ip, same_session, same_user, attack_sequence]
+
+max_links_per_cluster: 3000
+max_event_ids_in_details: 2000
+
+# A cluster becomes a potential incident when ANY of these holds.
+incident:
+  min_max_finding_confidence: 0.6
+  min_distinct_categories: 2
+
+timeline:
+  group_gap_s: 30                  # consecutive same-type events closer than this are shown as one entry
+  max_event_ids_per_entry: 50

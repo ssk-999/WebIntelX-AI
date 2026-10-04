@@ -1,0 +1,29 @@
+# WebIntelX AI - deterministic detection configuration (PRD section 33: thresholds externalised;
+# section 35: reproducible, documented logic). Values here are HEURISTIC defaults tuned against the
+# synthetic demo data; they are not validated against production traffic. Missing keys fall back to
+# the defaults in app/detection/config.py. `confidence` is a configured rule confidence in [0,1]
+# (how much evidence a single rule hit provides), NOT a probability that an attack occurred.
+version: 1
+
+analysis_window_hours: 24          # lookback used by incremental (on-ingest) analysis
+
+sensitive_path_prefixes: ["/api/admin", "/admin", "/api/account/payment-methods"]
+auth_path_prefixes: ["/login", "/api/login", "/auth", "/api/auth"]
+headless_user_agent_tokens: ["headlesschrome", "phantomjs", "selenium", "puppeteer", "playwright"]
+automation_user_agent_tokens: ["scrapy", "curl/", "wget/", "python-requests", "python-urllib", "go-http-client", "libwww-perl"]
+
+rules:
+  R-AUTH-001: {enabled: true, min_failures: 10, run_gap_s: 30, confidence_base: 0.75, confidence_max: 0.95}
+  R-AUTH-002: {enabled: true, min_failures: 10, min_distinct_users: 5, run_gap_s: 30, confidence: 0.8}
+  R-AUTH-003: {enabled: true, lookback_s: 600, confidence: 0.8, confidence_account_match: 0.9}
+  R-BEH-001:  {enabled: true, window_s: 10, min_requests: 30, confidence: 0.7}
+  R-BEH-002:  {enabled: true, confidence_one_signal: 0.55, confidence_multi_signal: 0.75}
+  R-BEH-003:  {enabled: true, min_page_views: 5, max_median_gap_s: 3.0, confidence: 0.5}
+  R-BEH-004:  {enabled: true, min_distinct_paths: 3, confidence: 0.45,
+               paths: ["/admin", "/wp-admin", "/phpmyadmin", "/.env", "/.git", "/robots.txt", "/sitemap.xml", "/api/docs", "/swagger", "/openapi.json"]}
+  R-ATK-001:  {enabled: true, confidence: 0.7}     # SQL injection indicators
+  R-ATK-002:  {enabled: true, confidence: 0.65}    # XSS indicators
+  R-ATK-003:  {enabled: true, confidence: 0.7}     # path traversal indicators
+  R-ATK-004:  {enabled: true, confidence: 0.7}     # SSRF indicators
+  R-ATK-005:  {enabled: true, min_categories: 3, window_s: 600, confidence: 0.85}  # multi-vector probing
+  R-WAF-001:  {enabled: true, confidence: 0.6}

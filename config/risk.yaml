@@ -1,0 +1,48 @@
+# WebIntelX AI - risk scoring configuration (PRD section 17, 33 Maintainability, 35 reproducibility).
+# PRD: "The precise weights must be configuration-driven and documented ... so results are reproducible."
+# HEURISTIC defaults chosen while looking at the synthetic demo data; they are NOT validated on production traffic.
+# Missing keys fall back to the defaults in app/risk/config.py. An invalid file falls back to defaults (see /health).
+#
+# score = 100 * SUM(weight_i * value_i) / SUM(weight_i)      value_i in [0,1], computed deterministically (no LLM)
+# A factor with no evidence adds 0 points. It never subtracts: absence of evidence is not a claim of safety.
+version: 1
+enabled: true
+
+weights:                       # relative importance; only the ratios matter (they need not sum to 100)
+  behavior: 10                 # rule findings of type behavior_anomaly (request rate, automation, navigation, recon)
+  anomaly: 10                  # Isolation Forest session anomaly score (M4)
+  attack_indicators: 20        # rule findings of type attack_indicator (SQLi / XSS / traversal / SSRF / WAF ...)
+  authentication: 20           # rule findings of type auth_anomaly (failed-login burst, success after burst ...)
+  sensitive_endpoint: 10       # sensitive endpoint involvement
+  correlation: 15              # number + strength of correlated events, recognised attack-chain stages
+  asset_impact: 10             # potential impact of the affected resources (configured path rules below)
+  threat_intel: 5              # real (non-synthetic) threat-intelligence evidence
+
+# Minimum score for each level; anything below `medium` is LOW.
+levels: {critical: 85, high: 65, medium: 40}
+
+anomaly: {score_floor: 0.5}    # value = (anomaly_score - floor) / (1 - floor), clamped to [0,1]
+attack_indicators: {breadth_bonus: 0.1}   # value = max finding confidence + bonus per additional distinct category
+authentication:
+  default_value: 0.5
+  category_values: {brute_force_indicator: 0.5, multi_account_auth_failures: 0.6, login_success_after_failure_burst: 1.0}
+sensitive_endpoint: {accessed: 0.7, with_successful_login: 1.0}
+correlation:
+  stage_weight: 0.4            # share of the 6 recognised attack-chain stages present
+  size_weight: 0.3             # log-scaled correlated event count
+  strength_weight: 0.3         # mean stored relationship strength
+  size_saturation_events: 100  # event count at which the size part reaches 1.0
+asset_impact:
+  default_value: 0.2           # an affected resource that matches no rule below
+  path_prefixes: {/admin: 1.0, /api/admin: 1.0, /api/account/payment-methods: 1.0, /api/account: 0.7, /api/login: 0.5, /login: 0.5, /api: 0.4}
+threat_intel:
+  first_evidence: 0.7          # one real IP/domain/CVE evidence result
+  each_additional: 0.15
+  count_synthetic: false       # SYNTHETIC demo intelligence never raises real severity (M6 promise)
+
+# Confidence = evidence/support quality, separate from risk (PRD section 17). It is NOT a probability.
+confidence:
+  weights: {signal_diversity: 0.4, finding_confidence: 0.35, correlation_strength: 0.25}
+  diversity_saturation: 4      # distinct signal kinds (auth, behaviour, attack indicator, ML anomaly, TI evidence) for 1.0
+  top_findings: 3              # finding_confidence = mean of this many highest rule/model confidences
+  truncation_penalty: 0.1      # subtracted when stored links or event ids were truncated

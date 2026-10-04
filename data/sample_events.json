@@ -1,0 +1,187 @@
+{
+  "events": [
+    {
+      "event_type": "page_view",
+      "source": "sdk",
+      "timestamp": "2026-10-03T09:00:02.022Z",
+      "attributes": {
+        "load_ms": 287,
+        "page_seq": 1,
+        "viewport": [
+          1280,
+          720
+        ],
+        "webdriver": false
+      },
+      "is_synthetic": true,
+      "session_id": "sess-n0517",
+      "user_id": "v-0517",
+      "source_ip": "192.0.2.48",
+      "user_agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36",
+      "method": "GET",
+      "endpoint": "/products"
+    },
+    {
+      "event_type": "interaction",
+      "source": "sdk",
+      "timestamp": "2026-10-03T09:00:12.806Z",
+      "attributes": {
+        "clicks": 2,
+        "dwell_ms": 11982,
+        "key_events": 4,
+        "mouse_moves": 192,
+        "page_seq": 1,
+        "scroll_events": 27
+      },
+      "is_synthetic": true,
+      "session_id": "sess-n0517",
+      "user_id": "v-0517",
+      "source_ip": "192.0.2.48",
+      "user_agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36"
+    },
+    {
+      "event_type": "login_success",
+      "source": "auth",
+      "timestamp": "2026-10-03T09:01:35.633Z",
+      "attributes": {},
+      "is_synthetic": true,
+      "session_id": "sess-n0177",
+      "user_id": "u-4310",
+      "source_ip": "192.0.2.188",
+      "user_agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36",
+      "method": "POST",
+      "endpoint": "/api/login",
+      "status_code": 200
+    },
+    {
+      "event_type": "session_created",
+      "source": "auth",
+      "timestamp": "2026-10-03T09:01:36.633Z",
+      "attributes": {},
+      "is_synthetic": true,
+      "session_id": "sess-n0177-a",
+      "user_id": "u-4310",
+      "source_ip": "192.0.2.188",
+      "user_agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36"
+    },
+    {
+      "event_type": "api_access",
+      "source": "api",
+      "timestamp": "2026-10-03T09:01:40.370Z",
+      "attributes": {},
+      "is_synthetic": true,
+      "session_id": "sess-n0177-a",
+      "user_id": "u-4310",
+      "source_ip": "192.0.2.188",
+      "user_agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36",
+      "method": "GET",
+      "endpoint": "/api/wishlist",
+      "status_code": 200
+    },
+    {
+      "event_type": "sensitive_endpoint_access",
+      "source": "api",
+      "timestamp": "2026-10-03T09:02:10.895Z",
+      "attributes": {},
+      "is_synthetic": true,
+      "session_id": "sess-n0382-a",
+      "user_id": "u-1522",
+      "source_ip": "192.0.2.130",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15",
+      "method": "GET",
+      "endpoint": "/api/account/payment-methods",
+      "status_code": 200
+    },
+    {
+      "event_type": "session_terminated",
+      "source": "auth",
+      "timestamp": "2026-10-03T09:02:35.662Z",
+      "attributes": {},
+      "is_synthetic": true,
+      "session_id": "sess-n0095",
+      "user_id": "v-0095",
+      "source_ip": "192.0.2.237",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0"
+    },
+    {
+      "event_type": "http_request",
+      "source": "app",
+      "timestamp": "2026-10-03T09:03:30.256Z",
+      "attributes": {},
+      "is_synthetic": true,
+      "session_id": "sess-n0470",
+      "user_id": "v-0470",
+      "source_ip": "198.51.100.127",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0",
+      "method": "GET",
+      "endpoint": "/old-page-7",
+      "status_code": 404
+    },
+    {
+      "event_type": "app_error",
+      "source": "app",
+      "timestamp": "2026-10-03T09:09:14.141Z",
+      "attributes": {
+        "error_class": "UpstreamTimeout"
+      },
+      "is_synthetic": true,
+      "session_id": "sess-n0429",
+      "user_id": "v-0429",
+      "source_ip": "198.51.100.37",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15",
+      "method": "GET",
+      "endpoint": "/api/orders",
+      "status_code": 500
+    },
+    {
+      "event_type": "login_failure",
+      "source": "auth",
+      "timestamp": "2026-10-03T09:55:13.668Z",
+      "attributes": {
+        "failure_reason": "invalid_credentials"
+      },
+      "is_synthetic": true,
+      "session_id": "sess-h-pre",
+      "user_id": "acct-1918",
+      "source_ip": "203.0.113.77",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/118.0.0.0 Safari/537.36",
+      "method": "POST",
+      "endpoint": "/api/login",
+      "status_code": 401
+    },
+    {
+      "event_type": "waf_alert",
+      "source": "waf",
+      "timestamp": "2026-10-03T09:56:17.068Z",
+      "attributes": {
+        "mode": "detect_only",
+        "rule_name": "sql_injection_pattern"
+      },
+      "is_synthetic": true,
+      "session_id": "sess-h-auth",
+      "user_id": "acct-4821",
+      "source_ip": "203.0.113.77",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/118.0.0.0 Safari/537.36",
+      "method": "POST",
+      "endpoint": "/api/reports/search",
+      "status_code": 500
+    },
+    {
+      "event_type": "security_decision",
+      "source": "waf",
+      "timestamp": "2026-10-03T09:56:17.168Z",
+      "attributes": {
+        "decision": "allow",
+        "mode": "detect_only"
+      },
+      "is_synthetic": true,
+      "session_id": "sess-h-auth",
+      "user_id": "acct-4821",
+      "source_ip": "203.0.113.77",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/118.0.0.0 Safari/537.36",
+      "method": "POST",
+      "endpoint": "/api/reports/search",
+      "status_code": 500
+    }
+  ]
+}

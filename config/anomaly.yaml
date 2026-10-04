@@ -1,0 +1,20 @@
+# WebIntelX AI - session anomaly model configuration (PRD section 33: externalised; section 35: reproducible).
+# Values are HEURISTIC defaults chosen while looking at the synthetic demo data; they are NOT validated
+# against production traffic. A session is reported only when BOTH independent signals agree:
+#   1. Isolation Forest anomaly score >= score_threshold   (multivariate rarity vs this website's own sessions)
+#   2. at least one feature deviates >= min_deviation_z robust deviations from the baseline median
+# `confidence` below maps the score onto a configured evidence weight; it is NOT a probability of attack.
+version: 1
+enabled: true
+
+window_hours: 72              # sessions are built from events newer than this
+min_training_sessions: 50     # fewer sessions than this -> status "insufficient_baseline" (no ML findings)
+
+model: {n_estimators: 200, max_samples: 256, random_state: 42}
+
+score_threshold: 0.65         # IsolationForest score = -score_samples; ~0.5 typical, towards 1.0 = more isolated
+min_deviation_z: 8.0          # robust z (median / max(1.4826*MAD, IQR/1.349, per-feature floor))
+notable_feature_z: 3.0        # features at or above this are listed as "notable deviations"
+max_notable_features: 5
+
+confidence: {min: 0.5, max: 0.9}   # linear map: score_threshold -> min, score 1.0 -> max

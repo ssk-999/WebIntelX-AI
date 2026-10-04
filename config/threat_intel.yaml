@@ -1,0 +1,23 @@
+# WebIntelX AI - threat-intelligence enrichment configuration (PRD section 16, 33, 35).
+# Which IP/domain reputation provider is used comes from the TI_PROVIDER / TI_API_KEY environment
+# variables (PRD section 41), never from this file. Missing keys fall back to app/threat_intel/config.py.
+version: 1
+enabled: true
+cache_ttl_s: 3600            # successful lookups are reused for this long (protects free-tier quotas); 0 disables the cache
+deadline_s: 30               # total time budget for one enrichment run; remaining network lookups are skipped when it is spent
+
+mitre:                       # local ATT&CK context layer (no network)
+  enabled: true
+nvd:                         # NVD CVE API 2.0 (works without a key at a lower rate limit; optional NVD_API_KEY)
+  enabled: true
+  timeout_s: 8
+  rate_limit_per_30s_without_key: 5
+  rate_limit_per_30s_with_key: 50
+otx:                         # used only when TI_PROVIDER=otx
+  timeout_s: 8
+
+indicators:
+  max_per_incident: 10       # cap on network lookups per indicator type (IPs, CVEs, domains)
+  ips:     {enabled: true, query_non_public: false}   # private/reserved/documentation/masked addresses are never sent out
+  cves:    {enabled: true}
+  domains: {enabled: false}  # referrer hosts are visitor data; leave off unless you need domain context

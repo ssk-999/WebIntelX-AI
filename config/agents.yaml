@@ -1,0 +1,56 @@
+# WebIntelX AI - agent / orchestration configuration (PRD sections 13, 14, 27, 29, 35, 41).
+# Everything here is externalised so behaviour is reproducible (PRD NFR Maintainability).
+# Missing keys fall back to the defaults in app/agents/config.py. An invalid file falls back to defaults (see /health).
+# Model NAMES come from the environment (LLM_MODEL = reasoning model, LLM_FAST_MODEL = fast model), never from this file.
+version: 1
+enabled: true
+
+llm:
+  temperature: 0.1             # low: the agents explain evidence, they do not create it
+  max_output_tokens: 1800      # reasoning models spend part of this on hidden reasoning
+  timeout_s: 60
+  max_attempts: 2              # a second attempt is made ONLY for unparseable / fully-ungrounded output (costs tokens)
+
+context:                       # what may be sent to the LLM (PRD section 11: raw events never go to the LLM)
+  max_chars: 9000              # hard budget for the serialised evidence bundle (free-tier token-per-minute limits are small)
+  max_findings: 8
+  max_timeline_entries: 12
+  max_ti_results: 6
+  max_event_ids_per_ref: 10
+  string_max_len: 80           # third-party / attacker-influenced strings are truncated and character-filtered
+
+investigation:                 # Agent 4
+  model_class: reasoning       # reasoning | fast  (PRD section 27)
+  max_supporting_claims: 6
+  max_missing_evidence: 5
+  max_alternatives: 3
+
+response:                      # Agent 7 - recommendations only; nothing is ever executed (PRD section 21, AC-19)
+  model_class: reasoning
+  max_recommendations: 5
+  allowed_actions:             # the model must choose from this list; anything else is dropped
+    - investigate_further
+    - review_affected_accounts
+    - force_password_reset_review
+    - require_mfa_review
+    - review_active_sessions
+    - rate_limit_source_review
+    - block_source_review
+    - waf_rule_review
+    - monitor
+    - notify_security_team
+
+alerting:                      # PRD section 20 / AC-17: incident-level alerts for high-risk incidents
+  enabled: true
+  levels: [HIGH, CRITICAL]
+  priority: {CRITICAL: P1, HIGH: P2, MEDIUM: P3, LOW: P4}
+
+orchestration:                 # deterministic steps run before the LLM agents
+  run_anomaly: true
+  run_threat_intel: true
+  run_risk: true
+  max_incidents_per_batch: 3   # website-level investigation cap (LLM cost / free-tier limits)
+  audit_max_entries: 50
+
+guardrails:                    # flagged (not rewritten) when the model sounds more certain than the evidence allows
+  overconfident_phrases: [definitely, certainly, undoubtedly, proves that, proof of, confirmed breach, confirmed attack, is a confirmed, without doubt]

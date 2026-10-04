@@ -1,0 +1,32 @@
+# Local two-container run: backend (FastAPI) + dashboard (Streamlit).   docker compose up --build
+# Values come from your shell or a local .env file (never committed). Not executed in the environment that wrote it.
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PRIVACY_SALT: ${PRIVACY_SALT:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-openai/gpt-oss-120b}
+      LLM_FAST_MODEL: ${LLM_FAST_MODEL:-openai/gpt-oss-20b}
+      TI_PROVIDER: ${TI_PROVIDER:-}
+      TI_API_KEY: ${TI_API_KEY:-}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8000}
+    volumes:
+      - webintelx-data:/data
+
+  dashboard:
+    build: .
+    command: ["streamlit", "run", "dashboard/streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true"]
+    environment:
+      WEBINTELX_API_URL: http://backend:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    healthcheck:
+      disable: true        # the image healthcheck targets the backend port
+
+volumes:
+  webintelx-data:
